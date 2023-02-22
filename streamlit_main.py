@@ -127,7 +127,7 @@ st.title("Wind Power Forecasting on the Orkney Islands")
 # st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
 # and the newest data point
 
-st.write("The current at Westray Airfield:")
+st.write("The current weather at Westray Airfield:")
 col1, col2, col3 = st.columns(3)
 col1.metric("Current Wind Speed [m/s]", str(round(data["Speed"].iloc[-1], 2)), delta=round(data["Speed"].iloc[-1] - data["Speed"].iloc[-2]))
 col2.metric("Current Wind Direction [°]", str(direction_map[data["Direction"].iloc[-1]]), delta=round(direction_map[data["Direction"].iloc[-1]] - direction_map[data["Direction"].iloc[-2]]))
@@ -153,14 +153,14 @@ with st.container():
             non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test = fx.data_splitting(data, output_val="Non-ANM")
             total_X_train, total_y_train, total_X_test, total_y_test = fx.data_splitting(data, output_val="Total")
 
-        with st.spinner("Grid Searching, this may take a couple of seconds..."):
+        with st.spinner("Grid searching, this may take a couple of seconds..."):
             anm_gridsearch, anm_best_params, anm_best_score, anm_test_score = train_models(ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test, anm_gridsearch)
         with st.spinner("Stay with me, we're almost done..."):
             non_anm_gridsearch, non_anm_best_params, non_anm_best_score, non_anm_test_score = train_models(non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test, non_anm_gridsearch)
 
             pred, total_test_score1 = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_gridsearch, non_anm_gridsearch)
         
-        with st.spinner("Training best estimator on all data, we're almost there..."):
+        with st.spinner("Training the best estimator on all data, we're almost there..."):
             anm_model, non_anm_model = load_models_and_train_on_all_data(data, anm_gridsearch, non_anm_gridsearch)
             _, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_model, non_anm_model)
 
@@ -178,9 +178,9 @@ with st.container():
 
         st.success("All done, thanks for your patience!")
 
-        cola.metric("Total Model MSE Score", round(total_test_score, 3))
-        colb.metric("ANM Model MSE Score", round(anm_test_score, 3))
-        colc.metric("Non-ANM Model MSE Score", round(non_anm_test_score, 3))
+        cola.metric("Total Model Test MSE Score", round(total_test_score, 3))
+        colb.metric("ANM Model Test MSE Score", round(anm_test_score, 3))
+        colc.metric("Non-ANM Model Test MSE Score", round(non_anm_test_score, 3))
 
         fig = px.line(final_df, x=final_df.index, y=["Model", "Actual", "Forecast"], title="Power Generation Forecast (Test Data and Predicted Future Power Generation)")
         fig.update_xaxes(title_text="Date")
