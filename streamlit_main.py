@@ -143,7 +143,7 @@ with st.expander("Open to see the input data"):
     st.markdown("Input Data table representation")
     st.dataframe(data.head(3))
 
-button = col2.button("Run Model")
+button = st.button("Run Model")
 
 if button:
     with st.spinner("Preparing Data..."):
@@ -156,13 +156,13 @@ if button:
         non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test = fx.data_splitting(data, output_val="Non-ANM")
         total_X_train, total_y_train, total_X_test, total_y_test = fx.data_splitting(data, output_val="Total")
 
-    with st.spinner("Grid Searching, this may take a minute..."):
+    with st.spinner("Grid Searching, this may take a couple of seconds..."):
         anm_gridsearch, anm_best_params, anm_best_score, anm_test_score = train_models(ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test, anm_gridsearch)
         non_anm_gridsearch, non_anm_best_params, non_anm_best_score, non_anm_test_score = train_models(non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test, non_anm_gridsearch)
 
         pred, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_gridsearch, non_anm_gridsearch)
     
-    with st.spinner("Training on all data, this will probably also take a minute..."):
+    with st.spinner("Training on all data, this will probably also take some seconds..."):
         anm_model, non_anm_model = load_models_and_train_on_all_data(data, anm_gridsearch, non_anm_gridsearch)
 
     with st.spinner("Getting the forecast..."):
@@ -171,9 +171,10 @@ if button:
     with st.spinner("Predicting the future..."):
         total_X_train, total_y_train = fx.final_data_splitting(data, output_val="Total")
         anm_pred = anm_model.predict(forecast)
+    with st.spinner("Stay with me, we're almost done..."):
         non_anm_pred = non_anm_model.predict(forecast)
 
-    with st.spinner("Preparing the results..."):
+    with st.spinner("Preparing the results, I swear this is the second last step..."):
         forecast_df = create_forecast_df(forecast, anm_pred, non_anm_pred)
         final_df = create_final_plotting_df(forecast_df, data)
 
@@ -181,7 +182,7 @@ if button:
 
     tab1, tab2, tab3 = st.tabs(["Total Model Prediction", "ANM Model", "Non-ANM Model"])
     # plot final_df using plotly
-    fig = px.line(final_df, x=final_df.index, y=["Model", "Actual", "Forecast"], title="Power Generation Forecast (Test Data and Forecasted Future)")
+    fig = px.line(final_df, x=final_df.index, y=["Model", "Actual", "Forecast"], title="Power Generation Forecast (Test Data and Predicted Future Power Generation)")
     # add x and y axis labels
     fig.update_xaxes(title_text="Date")
     fig.update_yaxes(title_text="Power Generation (MW)")
