@@ -138,7 +138,7 @@ col3.metric("Current Power Generation [MW] ", round(data["Total"].iloc[-1], 2), 
 st.caption("Arrow below is difference to 3H ago")
 
 with st.expander("Pipeline diagram:"):
-    st.image("figs\LSDA A1 Drawing.png")
+    st.image("figs\ModelDrawing.png")
 
 with st.container():
     cola, colb, colc = st.columns(3)
