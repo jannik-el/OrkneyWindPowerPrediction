@@ -143,7 +143,7 @@ with st.expander("Open to see the input data"):
     st.markdown("Input Data table representation")
     st.dataframe(data.head(3))
 
-button = st.button("Run Model")
+button = col2.button("Run Model")
 
 if button:
     with st.spinner("Preparing Data..."):
