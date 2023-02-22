@@ -135,7 +135,7 @@ col3.metric("Current Power Generation [MW] ", round(data["Total"].iloc[-1], 2), 
 st.caption("Arrow below is difference to 3H ago")
 
 with st.expander("Pipeline diagram:"):
-    diagram = Image.open("./figs/ModelDiagram.png")
+    diagram = "https://raw.githubusercontent.com/jannik-el/OrkneyWindPowerPrediction/main/figs/ModelDrawing.png"
     st.image(diagram, caption="Pipeline diagram")
 
 with st.container():
