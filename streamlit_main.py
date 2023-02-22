@@ -177,11 +177,9 @@ if button:
         forecast_df = create_forecast_df(forecast, anm_pred, non_anm_pred)
         final_df = create_final_plotting_df(forecast_df, data)
 
-    ready = st.success("All done, thanks for your patience!")
+    st.success("All done, thanks for your patience!")
 
-tab1, tab2, tab3 = st.tabs(["Total Model Prediction", "ANM Model", "Non-ANM Model"])
-
-if ready:
+    tab1, tab2, tab3 = st.tabs(["Total Model Prediction", "ANM Model", "Non-ANM Model"])
     # plot final_df using plotly
     fig = px.line(final_df, x=final_df.index, y=["Model", "Actual", "Forecast"], title="Power Generation Forecast (Test Data and Forecasted Future)")
     # add x and y axis labels
