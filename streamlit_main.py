@@ -92,6 +92,20 @@ def predict_and_combine(ANM_X_test, non_ANM_X_test, y_test, anm_gridsearch, non_
         pred = anm_pred + non_anm_pred
         return pred, fx.MSE(pred, y_test)
 
+def load_models_and_train_on_all_data(data, anm_gridsearch, non_anm_gridsearch):
+    # naming schemes is not my strong suit
+    anm_X_train, anm_y_train = fx.final_data_splitting(data, output_val="ANM")
+    non_anm_X_train, non_anm_y_train = fx.final_data_splitting(data, output_val="Non-ANM")
+    anm_gridsearch.fit(anm_X_train, anm_y_train)
+    non_anm_gridsearch.fit(non_anm_X_train, non_anm_y_train)
+    return anm_gridsearch, non_anm_gridsearch
+
+def create_forecast_df(forecast, anm_pred, non_anm_pred):
+    future = anm_pred + non_anm_pred
+    forecast["Power Generation Forecast"] = future
+    forecast = forecast.resample("3H").mean()
+    forecast.drop(columns=["Speed", "Source_time"], inplace=True)
+    return forecast
 
 st.title("Wind Power Forecasting on the Orkney Islands")
 
@@ -112,8 +126,7 @@ with st.expander("Open to see the input data"):
 button = st.button("Run Model")
 
 if button:
-    with st.spinner("One moment please..."):
-        ####### ML Model stuff #######
+    with st.spinner("Preparing Data..."):
         tscv = TimeSeriesSplit(n_splits=5)
 
         anm_gridsearch = GridSearchCV(anm_pipeline, anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
@@ -123,10 +136,25 @@ if button:
         non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test = fx.data_splitting(data, output_val="Non-ANM")
         total_X_train, total_y_train, total_X_test, total_y_test = fx.data_splitting(data, output_val="Total")
 
+    with st.spinner("Grid Searching..."):
         anm_gridsearch, anm_best_params, anm_best_score, anm_test_score = train_models(ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test, anm_gridsearch)
         non_anm_gridsearch, non_anm_best_params, non_anm_best_score, non_anm_test_score = train_models(non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test, non_anm_gridsearch)
 
         pred, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_gridsearch, non_anm_gridsearch)
+    
+    with st.spinner("Training on all data..."):
+        anm_model, non_anm_model = load_models_and_train_on_all_data(data, anm_gridsearch, non_anm_gridsearch)
+
+    with st.spinner("Getting the forecast..."):
+        forecast = fx.load_forecasts()
+        
+    with st.spinner("Predicting the future..."):
+        total_X_train, total_y_train = fx.final_data_splitting(data, output_val="Total")
+        anm_pred = anm_model.predict(forecast)
+        non_anm_pred = non_anm_model.predict(forecast)
+
+    with st.spinner("Preparing the results..."):
+        forecast_df = create_forecast_df(forecast, anm_pred, non_anm_pred)
 
         st.success("Model trained and ready to predict!")
 
