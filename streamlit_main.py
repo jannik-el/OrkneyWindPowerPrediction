@@ -75,8 +75,10 @@ non_anm_params = {
 
 # st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
 # and the newest data point
-st.metric("Current Wind Speed", data["Speed"].iloc[-1], delta=data["Speed"].iloc[-1] - data["Speed"].iloc[-2])
-st.metric("Current Power Generation", data["Power"].iloc[-1], delta=data["Power"].iloc[-1] - data["Power"].iloc[-2])
+col1, col2, col3 = st.beta_columns(3)
+col1.metric("Current Wind Speed", data["Speed"].iloc[-1], delta=data["Speed"].iloc[-1] - data["Speed"].iloc[-2])
+col2.metric("Current Wind Direction", data["Direction"].iloc[-1], delta=data["Direction"].iloc[-1] - data["Direction"].iloc[-2])
+col3.metric("Current Power Generation", data["Total"].iloc[-1], delta=data["Total"].iloc[-1] - data["Total"].iloc[-2])
 
 
 # main
