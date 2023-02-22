@@ -73,13 +73,20 @@ non_anm_params = {
     ]
 }
 
+direction_map = {
+            "N": 0, "NNE": 22.5, "NE": 45, "ENE": 67.5,
+            "E": 90, "ESE": 112.5, "SE": 135, "SSE": 157.5,
+            "S": 180, "SSW": 202.5, "SW": 225, "WSW": 247.5,
+            "W": 270, "WNW": 292.5, "NW": 315, "NNW": 337.5,
+        }
+
 st.title("Wind Power Forecasting on the Orkney Islands")
 
 # st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
 # and the newest data point
 col1, col2, col3 = st.columns(3)
 col1.metric("Current Wind Speed", round(data["Speed"].iloc[-1], 2), delta=data["Speed"].iloc[-1] - data["Speed"].iloc[-2])
-col2.metric("Current Wind Direction", fx.WindDirectionMapper().transform(data.iloc[-1]))
+col2.metric("Current Wind Direction", direction_map[data["Direction"].iloc[-1]], delta=direction_map[data["Direction"].iloc[-1]] - direction_map[data["Direction"].iloc[-2]])
 col3.metric("Current Power Generation", round(data["Total"].iloc[-1], 2), delta=data["Total"].iloc[-1] - data["Total"].iloc[-2])
 
 
