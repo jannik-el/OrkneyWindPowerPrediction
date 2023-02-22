@@ -112,20 +112,22 @@ with st.expander("Open to see the input data"):
 button = st.button("Run Model")
 
 if button:
-    ####### ML Model stuff #######
-    tscv = TimeSeriesSplit(n_splits=5)
+    with st.spinner("One moment please..."):
+        ####### ML Model stuff #######
+        tscv = TimeSeriesSplit(n_splits=5)
 
-    anm_gridsearch = GridSearchCV(anm_pipeline, anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
-    non_anm_gridsearch = GridSearchCV(non_anm_pipeline, non_anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+        anm_gridsearch = GridSearchCV(anm_pipeline, anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+        non_anm_gridsearch = GridSearchCV(non_anm_pipeline, non_anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
 
-    ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test = fx.data_splitting(data, output_val="ANM")
-    non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test = fx.data_splitting(data, output_val="Non-ANM")
-    total_X_train, total_y_train, total_X_test, total_y_test = fx.data_splitting(data, output_val="Total")
+        ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test = fx.data_splitting(data, output_val="ANM")
+        non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test = fx.data_splitting(data, output_val="Non-ANM")
+        total_X_train, total_y_train, total_X_test, total_y_test = fx.data_splitting(data, output_val="Total")
 
-    anm_gridsearch, anm_best_params, anm_best_score, anm_test_score = train_models(ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test, anm_gridsearch)
-    non_anm_gridsearch, non_anm_best_params, non_anm_best_score, non_anm_test_score = train_models(non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test, non_anm_gridsearch)
+        anm_gridsearch, anm_best_params, anm_best_score, anm_test_score = train_models(ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test, anm_gridsearch)
+        non_anm_gridsearch, non_anm_best_params, non_anm_best_score, non_anm_test_score = train_models(non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test, non_anm_gridsearch)
 
-    
-    pred, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_gridsearch, non_anm_gridsearch)
+        pred, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_gridsearch, non_anm_gridsearch)
+
+        st.success("Model trained and ready to predict!")
 
 tab1, tab2, tab3 = st.tabs(["Total Model Prediction", "ANM Model", "Non-ANM Model"])
