@@ -73,9 +73,11 @@ non_anm_params = {
     ]
 }
 
-# sidebar
-st.sidebar.title("Wind Power Forecasting on the Orkney Islands")
-st.sidebar.markdown("Write some description here")
+# st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
+# and the newest data point
+st.metric("Current Wind Speed", data["Speed"].iloc[-1], delta=data["Speed"].iloc[-1] - data["Speed"].iloc[-2])
+st.metric("Current Power Generation", data["Power"].iloc[-1], delta=data["Power"].iloc[-1] - data["Power"].iloc[-2])
+
 
 # main
 st.title("Wind Power Forecasting on the Orkney Islands")
