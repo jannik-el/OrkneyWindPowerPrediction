@@ -85,4 +85,4 @@ col3.metric("Current Power Generation", round(data["Total"].iloc[-1], 2), delta=
 
 # main
 st.markdown("Input Data table representation")
-st.dataframe(data.head(10))
+st.dataframe(data.head(3))

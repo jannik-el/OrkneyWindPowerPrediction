@@ -49,6 +49,11 @@ def data_splitting(data, output_val="Total", n_splits=5):
         y_train, y_test = data.iloc[train_index][output_val], data.iloc[test_index][output_val]
     return X_train, y_train, X_test, y_test
 
+def final_data_splitting(data, output_val):
+    X_train = data
+    y_train = data[output_val]
+    return X_train, y_train
+
 def load_forecasts():
     # load forecasts
     client = InfluxDBClient(host='influxus.itu.dk', port=8086, username='lsda', password='icanonlyread', database='orkney')
@@ -147,9 +152,7 @@ class TimestampTransformer(BaseEstimator, TransformerMixin):
         return self
         
     def transform(self, X, y=None):
-        # Convert the timestamp column to a pandas DatetimeIndex
         timestamp_index = X.index
-        # Extract the date and time of day into new columns
         X[self.date_col] = timestamp_index.date
         X[self.time_col] = timestamp_index.time
         return np.asarray(X[[self.date_col, self.time_col]])
