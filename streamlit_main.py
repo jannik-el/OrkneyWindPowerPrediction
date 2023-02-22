@@ -18,6 +18,7 @@ from sklearn.preprocessing import StandardScaler, PolynomialFeatures
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import TimeSeriesSplit
 
 
 import warnings
@@ -80,16 +81,50 @@ direction_map = {
             "W": 270, "WNW": 292.5, "NW": 315, "NNW": 337.5,
         }
 
+####### ML Model stuff #######
+
+tscv = TimeSeriesSplit(n_splits=5)
+
+anm_gridsearch = GridSearchCV(anm_pipeline, anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+non_anm_gridsearch = GridSearchCV(non_anm_pipeline, non_anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+
+ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test = fx.data_splitting(data, output_val="ANM")
+non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test = fx.data_splitting(data, output_val="Non-ANM")
+total_X_train, total_y_train, total_X_test, total_y_test = fx.data_splitting(data, output_val="Total")
+
+def train_models(X_train, y_train, X_test, y_test, gridsearch):
+    gridsearch.fit(X_train, y_train)
+    return gridsearch, gridsearch.best_params_, gridsearch.best_score_, gridsearch.score(X_test, y_test)*-1
+
+anm_gridsearch, anm_best_params, anm_best_score, anm_test_score = train_models(ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test, anm_gridsearch)
+non_anm_gridsearch, non_anm_best_params, non_anm_best_score, non_anm_test_score = train_models(non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test, non_anm_gridsearch)
+
+def predict_and_combine(ANM_X_test, non_ANM_X_test, y_test, anm_gridsearch, non_anm_gridsearch):
+    anm_pred = anm_gridsearch.predict(ANM_X_test)
+    non_anm_pred = non_anm_gridsearch.predict(non_ANM_X_test)
+    pred = anm_pred + non_anm_pred
+    return pred, fx.MSE(pred, y_test)
+
+pred, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_gridsearch, non_anm_gridsearch)
+
+
+###############################
+
+
+
 st.title("Wind Power Forecasting on the Orkney Islands")
 
 # st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
 # and the newest data point
 col1, col2, col3 = st.columns(3)
-col1.metric("Current Wind Speed", round(data["Speed"].iloc[-1], 2), delta=data["Speed"].iloc[-1] - data["Speed"].iloc[-2])
-col2.metric("Current Wind Direction", direction_map[data["Direction"].iloc[-1]], delta=direction_map[data["Direction"].iloc[-1]] - direction_map[data["Direction"].iloc[-2]])
-col3.metric("Current Power Generation", round(data["Total"].iloc[-1], 2), delta=data["Total"].iloc[-1] - data["Total"].iloc[-2])
+col1.metric("Current Wind Speed", round(data["Speed"].iloc[-1], 2), delta=round(data["Speed"].iloc[-1] - data["Speed"].iloc[-2]))
+col2.metric("Current Wind Direction", direction_map[data["Direction"].iloc[-1]], delta=round(direction_map[data["Direction"].iloc[-1]] - direction_map[data["Direction"].iloc[-2]]))
+col3.metric("Current Power Generation", round(data["Total"].iloc[-1], 2), delta=round(data["Total"].iloc[-1] - data["Total"].iloc[-2]))
 
 
 # main
-st.markdown("Input Data table representation")
-st.dataframe(data.head(3))
+with st.expander("Open to see the input data"):
+    st.markdown("Input Data table representation")
+    st.dataframe(data.head(3))
+
+tab1, tab2, tab3 = st.tabs(["Total Model Prediction", "ANM Model", "Non-ANM Model"])
