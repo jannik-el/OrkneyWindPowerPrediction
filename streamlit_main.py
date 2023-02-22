@@ -107,10 +107,30 @@ def create_forecast_df(forecast, anm_pred, non_anm_pred):
     forecast.drop(columns=["Speed", "Source_time"], inplace=True)
     return forecast
 
+def create_final_plotting_df(forecast_df, data):
+    # this code is just for plotting the final graph
+    ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test = fx.data_splitting(data, output_val="ANM")
+    non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test = fx.data_splitting(data, output_val="Non-ANM")
+    total_X_train, total_y_train, total_X_test, total_y_test = fx.data_splitting(data, output_val="Total")
+
+    test_anm_pred = anm_model.predict(ANM_X_test)
+    test_non_anm_pred = non_anm_model.predict(non_ANM_X_test)
+
+    test_prediction = test_anm_pred + test_non_anm_pred
+    test_data = fx.create_timestamps(test_prediction, total_X_test, total_y_test)
+
+    # combine testdata and forecastdf for easy plotting
+    final_df = pd.concat([test_data, forecast_df], axis=0)
+
+    final_df.columns = ["Model", "Actual", "Forecast"]
+    return final_df
+
 st.title("Wind Power Forecasting on the Orkney Islands")
 
 # st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
 # and the newest data point
+
+st.write("The current weather in the orkneys:")
 col1, col2, col3 = st.columns(3)
 col1.metric("Current Wind Speed [m/s]", str(round(data["Speed"].iloc[-1], 2)), delta=round(data["Speed"].iloc[-1] - data["Speed"].iloc[-2]))
 col2.metric("Current Wind Direction [°]", str(direction_map[data["Direction"].iloc[-1]]), delta=round(direction_map[data["Direction"].iloc[-1]] - direction_map[data["Direction"].iloc[-2]]))
@@ -136,13 +156,13 @@ if button:
         non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test = fx.data_splitting(data, output_val="Non-ANM")
         total_X_train, total_y_train, total_X_test, total_y_test = fx.data_splitting(data, output_val="Total")
 
-    with st.spinner("Grid Searching..."):
+    with st.spinner("Grid Searching, this may take a minute..."):
         anm_gridsearch, anm_best_params, anm_best_score, anm_test_score = train_models(ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test, anm_gridsearch)
         non_anm_gridsearch, non_anm_best_params, non_anm_best_score, non_anm_test_score = train_models(non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test, non_anm_gridsearch)
 
         pred, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_gridsearch, non_anm_gridsearch)
     
-    with st.spinner("Training on all data..."):
+    with st.spinner("Training on all data, this will probably also take a minute..."):
         anm_model, non_anm_model = load_models_and_train_on_all_data(data, anm_gridsearch, non_anm_gridsearch)
 
     with st.spinner("Getting the forecast..."):
@@ -155,7 +175,17 @@ if button:
 
     with st.spinner("Preparing the results..."):
         forecast_df = create_forecast_df(forecast, anm_pred, non_anm_pred)
+        final_df = create_final_plotting_df(forecast_df, data)
 
-        st.success("Model trained and ready to predict!")
+    st.success("All done, thanks for your patience!")
 
 tab1, tab2, tab3 = st.tabs(["Total Model Prediction", "ANM Model", "Non-ANM Model"])
+
+# plot final_df using plotly
+fig = px.line(final_df, x=final_df.index, y=["Model", "Actual", "Forecast"], title="Power Generation Forecast (Test Data and Forecasted Future)")
+# add x and y axis labels
+fig.update_xaxes(title_text="Date")
+fig.update_yaxes(title_text="Power Generation (MW)")
+# change legend heading
+fig.update_layout(legend_title_text="")
+tab1.plotly_chart(fig)
