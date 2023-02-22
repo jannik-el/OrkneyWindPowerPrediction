@@ -177,15 +177,16 @@ if button:
         forecast_df = create_forecast_df(forecast, anm_pred, non_anm_pred)
         final_df = create_final_plotting_df(forecast_df, data)
 
-    st.success("All done, thanks for your patience!")
+    ready = st.success("All done, thanks for your patience!")
 
 tab1, tab2, tab3 = st.tabs(["Total Model Prediction", "ANM Model", "Non-ANM Model"])
 
-# plot final_df using plotly
-fig = px.line(final_df, x=final_df.index, y=["Model", "Actual", "Forecast"], title="Power Generation Forecast (Test Data and Forecasted Future)")
-# add x and y axis labels
-fig.update_xaxes(title_text="Date")
-fig.update_yaxes(title_text="Power Generation (MW)")
-# change legend heading
-fig.update_layout(legend_title_text="")
-tab1.plotly_chart(fig)
+if ready:
+    # plot final_df using plotly
+    fig = px.line(final_df, x=final_df.index, y=["Model", "Actual", "Forecast"], title="Power Generation Forecast (Test Data and Forecasted Future)")
+    # add x and y axis labels
+    fig.update_xaxes(title_text="Date")
+    fig.update_yaxes(title_text="Power Generation (MW)")
+    # change legend heading
+    fig.update_layout(legend_title_text="")
+    tab1.plotly_chart(fig)
