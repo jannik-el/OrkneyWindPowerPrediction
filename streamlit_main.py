@@ -159,8 +159,9 @@ with st.container():
             anm_gridsearch, anm_best_params, anm_best_score, anm_test_score = train_models(ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test, anm_gridsearch)
             pred, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_gridsearch, non_anm_gridsearch)
         
-        with st.spinner("Training the best estimator on all data, we're almost there..."):
+        with st.spinner("Training the best estimator on all data, I swear we're almost there..."):
             anm_model, non_anm_model = load_models_and_train_on_all_data(data, anm_gridsearch, non_anm_gridsearch)
+            _, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_model, non_anm_model)
 
         with st.spinner("Getting the forecast..."):
             forecast = fx.load_forecasts()
@@ -170,7 +171,7 @@ with st.container():
             anm_pred = anm_model.predict(forecast)
             non_anm_pred = non_anm_model.predict(forecast)
 
-        with st.spinner("Preparing the results, I swear this is the second last step..."):
+        with st.spinner("Preparing the results..."):
             forecast_df = create_forecast_df(forecast, anm_pred, non_anm_pred)
             final_df = create_final_plotting_df(forecast_df, data)
 
