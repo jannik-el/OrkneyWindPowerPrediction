@@ -3,9 +3,6 @@
 # import libraries
 import streamlit as st
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.express as px
 
 # import models
@@ -19,7 +16,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import TimeSeriesSplit
-
+from PIL import Image
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -138,7 +135,8 @@ col3.metric("Current Power Generation [MW] ", round(data["Total"].iloc[-1], 2), 
 st.caption("Arrow below is difference to 3H ago")
 
 with st.expander("Pipeline diagram:"):
-    st.image("figs\ModelDrawing.png")
+    diagram = Image.open("figs\ModelDiagram.png")
+    st.image(diagram, caption="Pipeline diagram")
 
 with st.container():
     cola, colb, colc = st.columns(3)
