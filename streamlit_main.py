@@ -79,7 +79,7 @@ st.title("Wind Power Forecasting on the Orkney Islands")
 # and the newest data point
 col1, col2, col3 = st.beta_columns(3)
 col1.metric("Current Wind Speed", round(data["Speed"].iloc[-1], 2), delta=data["Speed"].iloc[-1] - data["Speed"].iloc[-2])
-col2.metric("Current Wind Direction", data["Direction"].iloc[-1])
+col2.metric("Current Wind Direction", fx.WindDirectionMapper().transform(data["Direction"].iloc[-1]))
 col3.metric("Current Power Generation", round(data["Total"].iloc[-1], 2), delta=data["Total"].iloc[-1] - data["Total"].iloc[-2])
 
 
