@@ -25,24 +25,17 @@ import sys
 sys.path.append('..')
 import fx
 
-import base64
 
-@st.cache(allow_output_mutation=True)
-
-
-def set_png_as_page_bg():
-    page_bg_img = '''
+page_bg_img = """
     <style>
     body {
     background-image: url("https://unsplash.com/photos/hcvja5GrboU");
     background-size: cover;
     }
     </style>
-    '''
-    st.markdown(page_bg_img, unsafe_allow_html=True)
-    return
+"""
 
-set_png_as_page_bg()
+st.markdown(page_bg_img, unsafe_allow_html=True)
 
 data = fx.pull_data(days=90)
 
