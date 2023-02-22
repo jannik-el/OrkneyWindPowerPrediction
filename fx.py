@@ -2,7 +2,6 @@
 from influxdb import InfluxDBClient
 import pandas as pd
 import numpy as np
-from skimpy import skim
 import datetime as dt
 import matplotlib.pyplot as plt
 import seaborn as sns
