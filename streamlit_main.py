@@ -25,18 +25,6 @@ import sys
 sys.path.append('..')
 import fx
 
-
-page_bg_img = """
-    <style>
-    body {
-    background-image: url("https://unsplash.com/photos/hcvja5GrboU");
-    background-size: cover;
-    }
-    </style>
-"""
-
-st.markdown(page_bg_img, unsafe_allow_html=True)
-
 data = fx.pull_data(days=90)
 
 # pipelines
@@ -187,6 +175,7 @@ with st.container():
             forecast_df = create_forecast_df(forecast, anm_pred, non_anm_pred)
             final_df = create_final_plotting_df(forecast_df, data)
 
+        st.balloons()
         st.success("All done, thanks for your patience!")
 
         cola.metric("Total Model Test MSE Score", round(total_test_score, 3))
