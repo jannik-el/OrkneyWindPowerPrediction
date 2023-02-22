@@ -178,12 +178,12 @@ with st.container():
 
         st.success("All done, thanks for your patience!")
 
-        tab1, tab2, tab3 = st.tabs(["Total Model Prediction", "ANM Model", "Non-ANM Model"])
-        # plot final_df using plotly
+        cola.metric("Total Model MSE Score", round(total_test_score, 3))
+        colb.metric("ANM Model MSE Score", round(anm_test_score, 3))
+        colc.metric("Non-ANM Model MSE Score", round(non_anm_test_score, 3))
+
         fig = px.line(final_df, x=final_df.index, y=["Model", "Actual", "Forecast"], title="Power Generation Forecast (Test Data and Predicted Future Power Generation)")
-        # add x and y axis labels
         fig.update_xaxes(title_text="Date")
         fig.update_yaxes(title_text="Power Generation (MW)")
-        # change legend heading
         fig.update_layout(legend_title_text="")
-        tab1.plotly_chart(fig)
+        st.plotly_chart(fig)
