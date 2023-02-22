@@ -18,6 +18,9 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import PolynomialFeatures
 import ewtpy
 
+import warnings
+warnings.filterwarnings('ignore')
+
 ###### Initial Data Pull and Data Cleaning ######
 
 def get_df(results):

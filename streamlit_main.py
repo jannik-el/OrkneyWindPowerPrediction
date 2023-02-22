@@ -80,36 +80,17 @@ direction_map = {
             "S": 180, "SSW": 202.5, "SW": 225, "WSW": 247.5,
             "W": 270, "WNW": 292.5, "NW": 315, "NNW": 337.5,
         }
-
-####### ML Model stuff #######
-
-tscv = TimeSeriesSplit(n_splits=5)
-
-anm_gridsearch = GridSearchCV(anm_pipeline, anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
-non_anm_gridsearch = GridSearchCV(non_anm_pipeline, non_anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
-
-ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test = fx.data_splitting(data, output_val="ANM")
-non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test = fx.data_splitting(data, output_val="Non-ANM")
-total_X_train, total_y_train, total_X_test, total_y_test = fx.data_splitting(data, output_val="Total")
-
-def train_models(X_train, y_train, X_test, y_test, gridsearch):
-    gridsearch.fit(X_train, y_train)
-    return gridsearch, gridsearch.best_params_, gridsearch.best_score_, gridsearch.score(X_test, y_test)*-1
-
-anm_gridsearch, anm_best_params, anm_best_score, anm_test_score = train_models(ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test, anm_gridsearch)
-non_anm_gridsearch, non_anm_best_params, non_anm_best_score, non_anm_test_score = train_models(non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test, non_anm_gridsearch)
-
-def predict_and_combine(ANM_X_test, non_ANM_X_test, y_test, anm_gridsearch, non_anm_gridsearch):
-    anm_pred = anm_gridsearch.predict(ANM_X_test)
-    non_anm_pred = non_anm_gridsearch.predict(non_ANM_X_test)
-    pred = anm_pred + non_anm_pred
-    return pred, fx.MSE(pred, y_test)
-
-pred, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_gridsearch, non_anm_gridsearch)
-
-
 ###############################
 
+def train_models(X_train, y_train, X_test, y_test, gridsearch):
+        gridsearch.fit(X_train, y_train)
+        return gridsearch, gridsearch.best_params_, gridsearch.best_score_, gridsearch.score(X_test, y_test)*-1
+
+def predict_and_combine(ANM_X_test, non_ANM_X_test, y_test, anm_gridsearch, non_anm_gridsearch):
+        anm_pred = anm_gridsearch.predict(ANM_X_test)
+        non_anm_pred = non_anm_gridsearch.predict(non_ANM_X_test)
+        pred = anm_pred + non_anm_pred
+        return pred, fx.MSE(pred, y_test)
 
 
 st.title("Wind Power Forecasting on the Orkney Islands")
@@ -126,5 +107,24 @@ col3.metric("Current Power Generation", round(data["Total"].iloc[-1], 2), delta=
 with st.expander("Open to see the input data"):
     st.markdown("Input Data table representation")
     st.dataframe(data.head(3))
+
+button = st.button("Run Model")
+
+if button:
+    ####### ML Model stuff #######
+    tscv = TimeSeriesSplit(n_splits=5)
+
+    anm_gridsearch = GridSearchCV(anm_pipeline, anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+    non_anm_gridsearch = GridSearchCV(non_anm_pipeline, non_anm_params, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+
+    ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test = fx.data_splitting(data, output_val="ANM")
+    non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test = fx.data_splitting(data, output_val="Non-ANM")
+    total_X_train, total_y_train, total_X_test, total_y_test = fx.data_splitting(data, output_val="Total")
+
+    anm_gridsearch, anm_best_params, anm_best_score, anm_test_score = train_models(ANM_X_train, ANM_y_train, ANM_X_test, ANM_y_test, anm_gridsearch)
+    non_anm_gridsearch, non_anm_best_params, non_anm_best_score, non_anm_test_score = train_models(non_ANM_X_train, non_ANM_y_train, non_ANM_X_test, non_ANM_y_test, non_anm_gridsearch)
+
+    
+    pred, total_test_score = predict_and_combine(ANM_X_test, non_ANM_X_test, total_y_test, anm_gridsearch, non_anm_gridsearch)
 
 tab1, tab2, tab3 = st.tabs(["Total Model Prediction", "ANM Model", "Non-ANM Model"])
