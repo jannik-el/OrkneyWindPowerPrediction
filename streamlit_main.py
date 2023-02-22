@@ -73,6 +73,8 @@ non_anm_params = {
     ]
 }
 
+st.title("Wind Power Forecasting on the Orkney Islands")
+
 # st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
 # and the newest data point
 col1, col2, col3 = st.beta_columns(3)
@@ -82,6 +84,5 @@ col3.metric("Current Power Generation", data["Total"].iloc[-1], delta=data["Tota
 
 
 # main
-st.title("Wind Power Forecasting on the Orkney Islands")
 st.markdown("Input Data table representation")
 st.dataframe(data.head(10))
