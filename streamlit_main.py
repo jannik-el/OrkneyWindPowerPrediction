@@ -127,7 +127,7 @@ def create_final_plotting_df(forecast_df, data):
     final_df.columns = ["Model", "Actual", "Forecast"]
     return final_df, wind_speed_data
 
-st.title("Wind Power Production Prediction on the Orkney Islands")
+st.title("Wind Power Production Prediction for the Orkney Islands")
 st.markdown("-------")
 st.write("This app uses a combination of artificial neural networks and other machine learning models to predict the power generation of the wind turbines on the Orkney Islands.")
 st.write("The weather data used to train the models is from the [MetOffice weather station at Westray Airfield](https://www.metoffice.gov.uk/weather/forecast/gftcsumwq#?date=2023-02-23), and the power generation data used to train the models is from [SSEN.](https://www.ssen.co.uk/our-services/active-network-management/)")
@@ -194,15 +194,20 @@ with st.container():
         st.balloons()
         st.success("All done, thanks for your patience!")
 
-        cola.metric("Total Model Test MSE Score", round(total_test_score, 3))
-        colb.metric("ANM Model Test MSE Score", round(anm_test_score, 3))
-        colc.metric("Non-ANM Model Test MSE Score", round(non_anm_test_score, 3))
-
         fig = px.line(final_df, x=final_df.index, y=["Model", "Actual", "Forecast"], title="Power Generation Forecast (Test Data and Predicted Future Power Generation)")
         fig.update_xaxes(title_text="Date")
         fig.update_yaxes(title_text="Power Generation (MW)")
         fig.update_layout(legend_title_text="")
         customdata = wind_speed_data
-        fig.update_traces(hovertemplate="<b>Power Generation: %{y:.2f} MW </b><br> Wind Speed: %{customdata:.2f} m/s <extra></extra>", customdata=customdata)
+        fig.update_traces(hovertemplate="<b>Power Generation: %{y:.2f} MW </b><br> Wind Speed: %{customdata:.2f} m/s <br><i> %{x}</i><extra></extra>", customdata=customdata)
         st.plotly_chart(fig)
+
+        with st.expander("Model Performance and Parameters"):
+            cola, colb, col3 = st.columns(3)
+
+            cola.metric("Total Model MSE Score*", round(total_test_score, 3))
+            colb.metric("ANM Model MSE Score*", round(anm_test_score, 3))
+            colc.metric("Non-ANM Model MSE Score*", round(non_anm_test_score, 3))
+
+            st.caption("MSE: Mean Squared Error Score, always measured on test data")
 
