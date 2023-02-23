@@ -146,7 +146,7 @@ data = fx.pull_data(days=5)
 format="%H:%M"
 date = data.index[-1].strftime(format)
 
-st.info(f"The most recent MetOffice weather observation ({date}) from Westray Airfield:")
+st.info(f"The most recent MetOffice weather observation", date, "from Westray Airfield:")
 col1, col2, col3 = st.columns(3)
 col1.metric("Current Wind Speed [m/s]", str(round(data["Speed"].iloc[-1], 2)), delta=round(data["Speed"].iloc[-1] - data["Speed"].iloc[-2]))
 col2.metric("Current Wind Direction [°]", str(direction_map[data["Direction"].iloc[-1]]), delta=round(direction_map[data["Direction"].iloc[-1]] - direction_map[data["Direction"].iloc[-2]]))
@@ -156,7 +156,7 @@ st.caption("Arrow below is difference to 3H ago")
 st.markdown("-------")
 
 with st.container():
-    col1, col2 = st.columns(3)
+    col1, col2 = st.columns(2)
     button = col1.button("Get forecast for the next 5 days from today")
     days = col2.slider("How manz days of data should be used to train the model? (lower increases streamlit runtime)", min_value=1, max_value=360, value=90, step=1)
     data = fx.pull_data(days=days)
