@@ -155,8 +155,8 @@ st.caption("Arrow below is difference to 3H ago")
 st.markdown("-------")
 
 with st.container():
-    cola, colb, colc = st.columns(3)
-    button = colb.button("Get forecast for the next 5 days from today")
+    cola1, colb1, colc1 = st.columns(3)
+    button = colb1.button("Get forecast for the next 5 days from today")
 
     if button:
         with st.spinner("Preparing Data..."):
@@ -203,11 +203,15 @@ with st.container():
         st.plotly_chart(fig)
 
         with st.expander("Model Performance and Parameters"):
-            cola, colb, col3 = st.columns(3)
+            cola, colb, colc = st.columns(3)
 
-            cola.metric("Total Model MSE Score*", round(total_test_score, 3))
-            colb.metric("ANM Model MSE Score*", round(anm_test_score, 3))
+            cola.metric("ANM Model MSE Score*", round(anm_test_score, 3))
+            colb.metric("Total Model MSE Score*", round(total_test_score, 3))
             colc.metric("Non-ANM Model MSE Score*", round(non_anm_test_score, 3))
 
-            st.caption("MSE: Mean Squared Error Score, always measured on test data")
+            st.caption("*MSE: Mean Squared Error Score, always measured on test data set (split using TimeSeriesSplit(n_splits=5))")
+
+            cola.metric("ANM Model Best Parameters", anm_best_params)
+            colb.metric("", "🌬️")
+            colc.metric("Non-ANM Model Best Parameters", non_anm_best_params)
 
