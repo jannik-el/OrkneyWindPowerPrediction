@@ -116,11 +116,15 @@ def create_final_plotting_df(forecast_df, data):
     test_prediction = test_anm_pred + test_non_anm_pred
     test_data = fx.create_timestamps(test_prediction, total_X_test, total_y_test)
 
-    # combine testdata and forecastdf for easy plotting
-    final_df = pd.concat([test_data, forecast_df], axis=0)
+    # slice total_x_test data to only get data up to the forecast datapoint
+    total_X_test = total_X_test.loc[:forecast_df.index[0]]
 
-    final_df.columns = ["Speed", "Model", "Actual", "Forecast"]
-    return final_df
+    wind_speed_data = pd.concat([forecast_df["Speed"], total_X_test["Speed"]], axis=0)
+
+    # combine testdata and forecastdf for easy plotting
+    final_df = pd.concat([test_data[["predict", "actual"]], forecast_df["Power Generation Forecast"]], axis=0)
+    final_df.columns = ["Model", "Actual", "Forecast"]
+    return final_df, wind_speed_data
 
 st.title("Wind Power Forecasting on the Orkney Islands")
 
@@ -173,7 +177,7 @@ with st.container():
 
         with st.spinner("Preparing the results..."):
             forecast_df = create_forecast_df(forecast, anm_pred, non_anm_pred)
-            final_df = create_final_plotting_df(forecast_df, data)
+            final_df, wind_speed_data = create_final_plotting_df(forecast_df, data)
 
         st.balloons()
         st.success("All done, thanks for your patience!")
@@ -186,11 +190,7 @@ with st.container():
         fig.update_xaxes(title_text="Date")
         fig.update_yaxes(title_text="Power Generation (MW)")
         fig.update_layout(legend_title_text="")
+        customdata = wind_speed_data
+        fig.update_traces(hovertemplate="<b>Power Generation: %{y:.2f} MW </b><br> Wind Speed: %{customdata:.2f} m/s <extra></extra>", customdata=customdata)
         st.plotly_chart(fig)
-
-        # plot forecasted wind speed against predicted power generation
-        fig2 = px.line(forecast_df, x="Speed", y="Power Generation Forecast", title="Forecasted Power Generation vs. Forecasted Wind Speed")
-        fig2.update_xaxes(title_text="Wind Speed (m/s)")
-        fig2.update_yaxes(title_text="Power Generation (MW)")
-        st.plotly_chart(fig2)
 
