@@ -132,8 +132,8 @@ st.title("Wind Power Forecasting on the Orkney Islands")
 # st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
 # and the newest data point
 
-format="%Y%m%d %H:%M"
-date = data.index[0].strftime(format)
+format="%H:%M"
+date = data.index[-1].strftime(format)
 
 st.write(f"The current (most recent observation: {date}) weather at Westray Airfield:")
 col1, col2, col3 = st.columns(3)
