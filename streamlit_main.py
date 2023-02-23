@@ -133,8 +133,9 @@ st.title("Wind Power Forecasting on the Orkney Islands")
 # and the newest data point
 
 format="%Y%m%d %H:%M"
+date = data.index[0].strftime(format)
 
-st.write(f"The current (most recent observation: {dt.strptime(data.index[0], format)}) weather at Westray Airfield:")
+st.write(f"The current (most recent observation: {date}) weather at Westray Airfield:")
 col1, col2, col3 = st.columns(3)
 col1.metric("Current Wind Speed [m/s]", str(round(data["Speed"].iloc[-1], 2)), delta=round(data["Speed"].iloc[-1] - data["Speed"].iloc[-2]))
 col2.metric("Current Wind Direction [°]", str(direction_map[data["Direction"].iloc[-1]]), delta=round(direction_map[data["Direction"].iloc[-1]] - direction_map[data["Direction"].iloc[-2]]))
