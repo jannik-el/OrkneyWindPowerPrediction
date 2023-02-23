@@ -189,7 +189,7 @@ with st.container():
         st.plotly_chart(fig)
 
         # plot forecasted wind speed against predicted power generation
-        fig2 = px.scatter(forecast_df, x="Wind Speed", y="Forecast", title="Forecasted Power Generation vs. Forecasted Wind Speed")
+        fig2 = px.scatter(forecast_df, x="Speed", y="Power Generation Forecast", title="Forecasted Power Generation vs. Forecasted Wind Speed")
         fig2.update_xaxes(title_text="Wind Speed (m/s)")
         fig2.update_yaxes(title_text="Power Generation (MW)")
         st.plotly_chart(fig2)
