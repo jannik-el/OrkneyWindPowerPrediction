@@ -119,7 +119,7 @@ def create_final_plotting_df(forecast_df, data):
     # combine testdata and forecastdf for easy plotting
     final_df = pd.concat([test_data, forecast_df], axis=0)
 
-    final_df.columns = ["Model", "Actual", "Forecast"]
+    final_df.columns = ["Speed", "Model", "Actual", "Forecast"]
     return final_df
 
 st.title("Wind Power Forecasting on the Orkney Islands")
