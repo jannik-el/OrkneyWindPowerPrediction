@@ -204,7 +204,7 @@ with st.container():
         fig.update_layout(legend_title_text="")
         customdata = wind_speed_data
         fig.update_traces(hovertemplate="<b>Power Generation: %{y:.2f} MW </b><br> Wind Speed: %{customdata:.2f} m/s <br><i> %{x}</i><extra></extra>", customdata=customdata)
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, theme=None)
 
         with st.expander("Model Performance and Parameters"):
             cola, colb, colc = st.columns(3)
@@ -215,9 +215,8 @@ with st.container():
 
             st.caption("*MSE: Mean Squared Error Score, always measured on test data set (split using TimeSeriesSplit(n_splits=5))")
 
-            cola.write("ANM Model Best Parameters")
-            cola.table(anm_best_params)
-            colb.metric("", "   🌬️")
-            colc.write("Non-ANM Model Best Parameters")
-            colc.table(non_anm_best_params)
+            st.write("ANM Model Best Parameters")
+            st.table(anm_best_params)
+            st.write("Non-ANM Model Best Parameters")
+            st.table(non_anm_best_params)
 
