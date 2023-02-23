@@ -127,6 +127,7 @@ def create_final_plotting_df(forecast_df, data):
 
 st.title("Wind Power Production Prediction for the Orkney Islands")
 st.subheader("By Jannik Elsäßer")
+st.caption("This app is a part of my research paper submission for the course 'Large Scale Data Analysis' at the IT University of Copenhagen.")
 st.markdown("-------")
 st.write("This app uses a combination of artificial neural networks and other machine learning models to predict the power generation of the wind turbines on the Orkney Islands.")
 st.write("The weather data used to train the models is from the [MetOffice weather station at Westray Airfield](https://www.metoffice.gov.uk/weather/forecast/gftcsumwq#?date=2023-02-23), and the power generation data used to train the models is from [SSEN.](https://www.ssen.co.uk/our-services/active-network-management/)")
