@@ -156,7 +156,7 @@ st.markdown("-------")
 
 with st.container():
     cola, colb, colc = st.columns(3)
-    button = st.button("Get forecast for the next 5 days from today")
+    button = colb.button("Get forecast for the next 5 days from today")
 
     if button:
         with st.spinner("Preparing Data..."):
