@@ -158,7 +158,7 @@ st.markdown("-------")
 with st.container():
     col1, col2 = st.columns(2)
     button = col1.button("Get forecast for the next 5 days from today")
-    days = col2.slider("How many days of data should be used to train the model?", min_value=1, max_value=360, value=90, step=1)
+    days = col2.slider("How many days of data should be used to train the model?", min_value=1, max_value=180, value=90, step=1)
     col2.caption("Less days increase streamlit runtime")
     data = fx.pull_data(days=days)
 
