@@ -222,4 +222,4 @@ with st.container():
             st.table(non_anm_best_params)
 
 itu_logo = "https://en.itu.dk/svg/itu/logo_en.svg"
-st.image(itu_logo)
+st.image(itu_logo, use_column_width=True)
