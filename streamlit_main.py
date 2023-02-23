@@ -221,5 +221,6 @@ with st.container():
             st.write("Non-ANM Model Best Parameters")
             st.table(non_anm_best_params)
 
+st.markdown("-------")
 itu_logo = "https://en.itu.dk/svg/itu/logo_en.svg"
 st.image(itu_logo, use_column_width=True)
