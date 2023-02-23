@@ -101,7 +101,7 @@ def create_forecast_df(forecast, anm_pred, non_anm_pred):
     future = anm_pred + non_anm_pred
     forecast["Power Generation Forecast"] = future
     forecast = forecast.resample("3H").mean()
-    forecast.drop(columns=["Speed", "Source_time"], inplace=True)
+    forecast.drop(columns=["Source_time"], inplace=True)
     return forecast
 
 def create_final_plotting_df(forecast_df, data):
@@ -187,3 +187,10 @@ with st.container():
         fig.update_yaxes(title_text="Power Generation (MW)")
         fig.update_layout(legend_title_text="")
         st.plotly_chart(fig)
+
+        # plot forecasted wind speed against predicted power generation
+        fig2 = px.scatter(forecast_df, x="Wind Speed", y="Forecast", title="Forecasted Power Generation vs. Forecasted Wind Speed")
+        fig2.update_xaxes(title_text="Wind Speed (m/s)")
+        fig2.update_yaxes(title_text="Power Generation (MW)")
+        st.plotly_chart(fig2)
+
