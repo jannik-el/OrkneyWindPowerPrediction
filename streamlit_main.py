@@ -26,8 +26,6 @@ import sys
 sys.path.append('..')
 import fx
 
-data = fx.pull_data(days=90)
-
 # pipelines
 anm_pipeline = Pipeline(steps=[
     ("col_transformer", ColumnTransformer(transformers=[
@@ -128,7 +126,7 @@ def create_final_plotting_df(forecast_df, data):
     return final_df, wind_speed_data
 
 st.title("Wind Power Production Prediction for the Orkney Islands")
-st.subheader("By Jannik Elsäßer'")
+st.subheader("By Jannik Elsäßer")
 st.markdown("-------")
 st.write("This app uses a combination of artificial neural networks and other machine learning models to predict the power generation of the wind turbines on the Orkney Islands.")
 st.write("The weather data used to train the models is from the [MetOffice weather station at Westray Airfield](https://www.metoffice.gov.uk/weather/forecast/gftcsumwq#?date=2023-02-23), and the power generation data used to train the models is from [SSEN.](https://www.ssen.co.uk/our-services/active-network-management/)")
@@ -143,6 +141,8 @@ st.markdown("-------")
 # st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
 # and the newest data point
 
+data = fx.pull_data(days=5)
+
 format="%H:%M"
 date = data.index[-1].strftime(format)
 
@@ -156,8 +156,10 @@ st.caption("Arrow below is difference to 3H ago")
 st.markdown("-------")
 
 with st.container():
-    cola1, colb1, colc1 = st.columns(3)
-    button = colb1.button("Get forecast for the next 5 days from today")
+    col1, colb2 = st.columns(3)
+    button = col1.button("Get forecast for the next 5 days from today")
+    days = col2.slider("How manz days of data should be used to train the model? (lower increases streamlit runtime)", min_value=1, max_value=360, value=90, step=1)
+    data = fx.pull_data(days=days)
 
     if button:
         with st.spinner("Preparing Data..."):
