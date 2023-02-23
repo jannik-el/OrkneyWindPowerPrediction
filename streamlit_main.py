@@ -128,9 +128,8 @@ def create_final_plotting_df(forecast_df, data):
     return final_df, wind_speed_data
 
 st.title("Wind Power Production Prediction on the Orkney Islands")
-st.subheader("This app uses a combination of Artificial Neural Networks and other Machine Learning models to predict the power generation of the wind turbines on the Orkney Islands.")
-st.write("The weather used to train the models is from the [MetOffice weather station at Westray Airfield](https://www.metoffice.gov.uk/weather/forecast/gftcsumwq#?date=2023-02-23).")
-st.write("The power generation data used to train the models is from [SSEN.](https://www.ssen.co.uk/our-services/active-network-management/)")
+st.write("This app uses a combination of Artificial Neural Networks and other Machine Learning models to predict the power generation of the wind turbines on the Orkney Islands.")
+st.write("The weather data used to train the models is from the [MetOffice weather station at Westray Airfield](https://www.metoffice.gov.uk/weather/forecast/gftcsumwq#?date=2023-02-23), and the power generation data used to train the models is from [SSEN.](https://www.ssen.co.uk/our-services/active-network-management/)")
 
 # st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
 # and the newest data point
