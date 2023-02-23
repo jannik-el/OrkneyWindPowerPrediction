@@ -204,7 +204,7 @@ with st.container():
         fig.update_layout(legend_title_text="")
         customdata = wind_speed_data
         fig.update_traces(hovertemplate="<b>Power Generation: %{y:.2f} MW </b><br> Wind Speed: %{customdata:.2f} m/s <br><i> %{x}</i><extra></extra>", customdata=customdata)
-        st.plotly_chart(fig, theme=None)
+        st.plotly_chart(fig, use_container_width=False)
 
         with st.expander("Model Performance and Parameters"):
             cola, colb, colc = st.columns(3)
