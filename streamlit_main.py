@@ -158,7 +158,8 @@ st.markdown("-------")
 with st.container():
     col1, col2 = st.columns(2)
     button = col1.button("Get forecast for the next 5 days from today")
-    days = col2.slider("How manz days of data should be used to train the model? (lower increases streamlit runtime)", min_value=1, max_value=360, value=90, step=1)
+    days = col2.slider("How many days of data should be used to train the model?", min_value=1, max_value=360, value=90, step=1)
+    col2.caption("Less days increase streamlit runtime")
     data = fx.pull_data(days=days)
 
     if button:
@@ -215,8 +216,8 @@ with st.container():
             st.caption("*MSE: Mean Squared Error Score, always measured on test data set (split using TimeSeriesSplit(n_splits=5))")
 
             cola.write("ANM Model Best Parameters")
-            cola.json(anm_best_params)
-            colb.metric("", "🌬️")
+            cola.table(anm_best_params)
+            colb.metric("", "   🌬️")
             colc.write("Non-ANM Model Best Parameters")
-            colc.json(non_anm_best_params)
+            colc.table(non_anm_best_params)
 
