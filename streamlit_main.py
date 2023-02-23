@@ -131,7 +131,7 @@ st.title("Wind Power Forecasting on the Orkney Islands")
 # st.metric the current windspeed and power generation in three columns, set delta to the difference between the second newest data point
 # and the newest data point
 
-st.write("The current weather at Westray Airfield:")
+st.write(f"The current (most recent observation: {data.index[0]}) weather at Westray Airfield:")
 col1, col2, col3 = st.columns(3)
 col1.metric("Current Wind Speed [m/s]", str(round(data["Speed"].iloc[-1], 2)), delta=round(data["Speed"].iloc[-1] - data["Speed"].iloc[-2]))
 col2.metric("Current Wind Direction [°]", str(direction_map[data["Direction"].iloc[-1]]), delta=round(direction_map[data["Direction"].iloc[-1]] - direction_map[data["Direction"].iloc[-2]]))
