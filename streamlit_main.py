@@ -128,6 +128,7 @@ def create_final_plotting_df(forecast_df, data):
     return final_df, wind_speed_data
 
 st.title("Wind Power Production Prediction for the Orkney Islands")
+st.subheader("By Jannik Elsäßer'")
 st.markdown("-------")
 st.write("This app uses a combination of artificial neural networks and other machine learning models to predict the power generation of the wind turbines on the Orkney Islands.")
 st.write("The weather data used to train the models is from the [MetOffice weather station at Westray Airfield](https://www.metoffice.gov.uk/weather/forecast/gftcsumwq#?date=2023-02-23), and the power generation data used to train the models is from [SSEN.](https://www.ssen.co.uk/our-services/active-network-management/)")
@@ -211,7 +212,9 @@ with st.container():
 
             st.caption("*MSE: Mean Squared Error Score, always measured on test data set (split using TimeSeriesSplit(n_splits=5))")
 
-            cola.metric("ANM Model Best Parameters", anm_best_params)
+            cola.write("ANM Model Best Parameters")
+            cola.json(anm_best_params)
             colb.metric("", "🌬️")
-            colc.metric("Non-ANM Model Best Parameters", non_anm_best_params)
+            colc.write("Non-ANM Model Best Parameters")
+            colc.json(non_anm_best_params)
 
