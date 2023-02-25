@@ -29,7 +29,7 @@ import fx
 # pipelines
 anm_pipeline = Pipeline(steps=[
     ("col_transformer", ColumnTransformer(transformers=[
-        ("time", fx.TimestampTransformer(), []),
+        ("time", None, []),
         ("Speed", None, ["Speed"]),
         ("Direction", None, ["Direction"]),
         ], remainder="drop")),
@@ -37,6 +37,7 @@ anm_pipeline = Pipeline(steps=[
 ])
 
 anm_params = {
+    'col_transformer__time': [None, "drop", fx.TimeFeatures()],
     'col_transformer__Speed': [None, StandardScaler(), PolynomialFeatures(), fx.EmpiricalWaveletTransform(level=5)],
     'col_transformer__Direction': ["drop", fx.WindDirectionMapper(), fx.CompassToCartesianTransformer()],
     'model': [
