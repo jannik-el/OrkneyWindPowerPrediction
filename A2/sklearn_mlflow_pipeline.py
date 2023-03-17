@@ -35,7 +35,9 @@ warnings.filterwarnings('ignore')
 sys.path.append('..')
 import fx
 
-tracking_server = "itu-training"
+
+
+tracking_server = "my-azure"
 
 if tracking_server == "itu-training":
     mlflow.set_tracking_uri("http://training.itu.dk:5000/")

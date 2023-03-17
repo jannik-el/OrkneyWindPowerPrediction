@@ -1,0 +1,10 @@
+name: Orkney-Windpower-Prediction
+
+python_env: python_env.yaml
+
+entry_points:
+  main:
+    parameters:
+      tracking_server: {type: string, default: "local"}
+      days: {type: int, default: 90}
+    command: "python sklearn_mlflow_pipeline.py -P {tracking_server} {days}"
