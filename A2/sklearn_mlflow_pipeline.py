@@ -37,7 +37,7 @@ import fx
 
 
 
-tracking_server = "my-azure"
+tracking_server = "itu-training"
 
 if tracking_server == "itu-training":
     mlflow.set_tracking_uri("http://training.itu.dk:5000/")
@@ -100,5 +100,3 @@ with mlflow.start_run():
     predictions = gridsearch.predict(X_test)
 
     mlflow.log_metric("test_mse", fx.MSE(y_test, predictions))
-
-mlflow.end_run()
