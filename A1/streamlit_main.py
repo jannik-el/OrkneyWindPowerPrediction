@@ -135,7 +135,7 @@ st.write("The weather data used to train the models is from the [MetOffice weath
 
 with st.expander("Pipeline diagram:"):
     st.write("For a more detailed explanation of the pipeline, please see the my research paper [submission](https://github.com/jannik-el/OrkneyWindPowerPrediction/blob/main/A1/submission/LSDA_Assignment_1FINAL.pdf)")
-    diagram = "https://raw.githubusercontent.com/jannik-el/A1/OrkneyWindPowerPrediction/main/figs/ModelDrawing.png"
+    diagram = "https://raw.githubusercontent.com/jannik-el/OrkneyWindPowerPrediction/main/A1/figs/ModelDrawing.png"
     st.image(diagram, caption="Pipeline diagram")
 
 st.markdown("-------")
